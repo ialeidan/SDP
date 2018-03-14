@@ -198,10 +198,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onResponse(JSONObject response) {
                 Log.e("success_signIn", response.toString());
                 // TODO: Go to MAIN.
-
                 mAuthTask = false;
                 showProgress(false);
 
+                Intent intent = new Intent(LoginActivity.this, MainUserActivity.class);
+                startActivity(intent);
+                finish();
             }
 
             @Override
