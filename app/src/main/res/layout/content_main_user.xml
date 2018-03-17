@@ -9,9 +9,8 @@
     tools:showIn="@layout/app_bar_main_user">
 
     <FrameLayout
+        android:id="@+id/mainFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/mainFrame">
-    </FrameLayout>
+        android:layout_height="match_parent"></FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

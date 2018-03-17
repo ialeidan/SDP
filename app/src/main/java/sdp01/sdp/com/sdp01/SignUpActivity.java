@@ -41,6 +41,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import sdp01.sdp.com.sdp01.data_source.DataSource;
+import sdp01.sdp.com.sdp01.data_source.DataSourceRequestListner;
+import sdp01.sdp.com.sdp01.data_source.ErrorCode;
 import sdp01.sdp.com.sdp01.util.Networking;
 import sdp01.sdp.com.sdp01.util.SaveSharedPreference;
 
@@ -165,140 +168,53 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
-        // Check for valid username.
-        if (TextUtils.isEmpty(username)){
-            mUsernameView.setError(getString(R.string.error_field_required));
-            focusView = mUsernameView;
-            cancel = true;
-        }
-
-        // Check for valid phone number.
-        if (TextUtils.isEmpty(phone)){
-            mPhonenumberView.setError(getString(R.string.error_field_required));
-            focusView = mPhonenumberView;
-            cancel = true;
-        }else if (!isPhoneValid(phone)){
-            mPhonenumberView.setError(getString(R.string.error_phone_invalid));
-            focusView = mPhonenumberView;
-            cancel = true;
-        }
-
-        if (cancel){
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            userSignUp(username, phone, email, password);
-        }
-    }
-
-    private void userSignUp(final String username, final String phone, final String email, final String password){
         mAuthTask = true;
+        showProgress(true);
 
-        Networking.signUp(username, phone, email, password, new JSONObjectRequestListener() {
+
+        DataSource.signUpUser(username, phone, email, password, new DataSourceRequestListner() {
+
+            View focusView = null;
+
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("success_signUp", response.toString());
-
-                String idToken, refreshToken, expiresIn, localId;
-
-                try {
-                    idToken = response.getString("idToken");
-                    refreshToken = response.getString("refreshToken");
-                    expiresIn = response.getString("expiresIn");
-                    localId = response.getString("localId");
-
-                    SaveSharedPreference.setUserLoginInfo(getApplicationContext(), email,
-                            idToken, refreshToken, expiresIn, localId);
-
-                    //TODO: Go to MainActivity.
-
-
-                    Log.e("success_signUp", refreshToken);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    // TODO: Error Signing In POP UP.
-                }
-
+                // TODO: Go to MAIN.
                 mAuthTask = false;
                 showProgress(false);
+
+                Intent intent = new Intent(SignUpActivity.this, MainUserActivity.class);
+                startActivity(intent);
+                finish();
             }
 
             @Override
-            public void onError(ANError anError) {
-                Log.e("error_signUp", anError.getErrorBody());
+            public void onError(ErrorCode anError) {
+                final int errorCode = anError.code;
 
-                JSONObject error;
-                String code;
-
-                try {
-                    error = new JSONObject(anError.getErrorBody());
-
-                    if (error != null){
-                        code = error.getJSONObject("error").getJSONArray("errors").getJSONObject(0).getString("message");
-
-                        if (code.equals("EMAIL_EXISTS")){
-                            mEmailView.setError(getString(R.string.error_registered_email));
-                            mEmailView.requestFocus();
-                        }else{
-                            mPasswordView.setError(getString(R.string.error_network));
-                            mPasswordView.requestFocus();
-                        }
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    // TODO: Error Signing In POP UP.
+                if (errorCode == -103) {
+                    mPasswordView.setError(anError.info);
+                    focusView = mPasswordView;
+                } else if (errorCode == -102 || errorCode == -21) {
+                    mEmailView.setError(anError.info);
+                    focusView = mEmailView;
+                } else if (errorCode == -104) {
+                    mPhonenumberView.setError(anError.info);
+                    focusView = mPhonenumberView;
+                } else if (errorCode == -101) {
+                    mUsernameView.setError(anError.info);
+                    focusView = mUsernameView;
+                } else {
+                    mPasswordView.setError(anError.info);
+                    focusView = mPasswordView;
                 }
 
-
-
+                // There was an error; don't attempt login and focus the first
+                // form field with an error.
+                focusView.requestFocus();
                 mAuthTask = false;
                 showProgress(false);
             }
         });
-
-    }
-
-    private boolean isPhoneValid(String phone){
-        if (phone == null || TextUtils.isEmpty(phone)) {
-            return false;
-        } else {
-            return android.util.Patterns.PHONE.matcher(phone).matches();
-        }
-    }
-
-    private boolean isEmailValid(String email) {
-        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 5;
     }
 
     /**

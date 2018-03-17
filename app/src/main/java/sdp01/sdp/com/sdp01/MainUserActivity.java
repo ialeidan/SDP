@@ -1,6 +1,7 @@
 package sdp01.sdp.com.sdp01;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import sdp01.sdp.com.sdp01.data_source.DataSource;
 import sdp01.sdp.com.sdp01.dummy.DummyContent;
 
 public class MainUserActivity extends AppCompatActivity
@@ -27,6 +29,18 @@ public class MainUserActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // If not signed in, go to login screen.
+        if (!DataSource.isSingedIn()) {
+            Intent intent = new Intent(MainUserActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        // TODO: Thread to Refresh Topken and sign in again.
+
+
         setContentView(R.layout.activity_main_user);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
