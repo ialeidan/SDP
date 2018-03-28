@@ -88,6 +88,31 @@ public class DataSource {
 
     }
 
+    public static void signUpSP(String username, String phone, String email, String password, final DataSourceRequestListner listner) {
+        String userName = username;
+        String userPhone = phone.replaceAll("\\s+", "");
+        String userEmail = email.replaceAll("\\s+", "");
+        String userPassword = password.replaceAll("\\s+", "");
+
+        ErrorCode error = validationSignUpFields(userName, userPhone, userEmail, userPassword);
+        if (error != null) {
+            listner.onError(error);
+        } else {
+            Networking.signUpSP(userName, userPhone, userEmail, userPassword, new DataSourceRequestListner() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    listner.onResponse(response);
+                }
+
+                @Override
+                public void onError(ErrorCode anError) {
+                    listner.onError(anError);
+                }
+            });
+        }
+
+    }
+
     private static ErrorCode validationSignUpFields(String name, String phone, String email, String password) {
 
         if (TextUtils.isEmpty(name)) {

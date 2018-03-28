@@ -3,28 +3,21 @@ package sdp01.sdp.com.sdp01;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.PackageManager;
-import android.net.Network;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -32,10 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -44,15 +33,10 @@ import java.util.List;
 import sdp01.sdp.com.sdp01.data_source.DataSource;
 import sdp01.sdp.com.sdp01.data_source.DataSourceRequestListner;
 import sdp01.sdp.com.sdp01.data_source.ErrorCode;
-import sdp01.sdp.com.sdp01.util.Networking;
-import sdp01.sdp.com.sdp01.util.SaveSharedPreference;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-/**
- * A login screen that offers login via email/password.
- */
-public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class SignUpSP extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -73,7 +57,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_sign_up_sp);
         // Set up the login form.
         mUsernameView = (EditText) findViewById(R.id.username);
         mPhonenumberView = (EditText) findViewById(R.id.phone);
@@ -85,7 +69,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptSignup();
+//                    attemptSignup();
                     return true;
                 }
                 return false;
@@ -93,15 +77,16 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_up_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptSignup();
+//                attemptSignup();
             }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
     }
 
     private void populateAutoComplete() {
@@ -147,13 +132,13 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         }
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     private void attemptSignup() {
+
         if (mAuthTask == true) {
             return;
         }
@@ -171,8 +156,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         mAuthTask = true;
         showProgress(true);
 
-
-        DataSource.signUpUser(username, phone, email, password, new DataSourceRequestListner() {
+        // TODO: SIGN UP.
+        DataSource.signUpSP(username, phone, email, password, new DataSourceRequestListner() {
 
             View focusView = null;
 
@@ -182,7 +167,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                 mAuthTask = false;
                 showProgress(false);
 
-                Intent intent = new Intent(SignUpActivity.this, MainUserActivity.class);
+                Intent intent = new Intent(SignUpSP.this, MainUserActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -216,6 +201,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             }
         });
     }
+
+
 
     /**
      * Shows the progress UI and hides the login form.
@@ -258,7 +245,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         return new CursorLoader(this,
                 // Retrieve data rows for the device user's 'profile' contact.
                 Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
+                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), SignUpSP.ProfileQuery.PROJECTION,
 
                 // Select only email addresses.
                 ContactsContract.Contacts.Data.MIMETYPE +
@@ -275,7 +262,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         List<String> emails = new ArrayList<>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
+            emails.add(cursor.getString(SignUpSP.ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
 
@@ -290,7 +277,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(SignUpActivity.this,
+                new ArrayAdapter<>(SignUpSP.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
@@ -313,10 +300,9 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         finish();
     }
 
-    public void signUpSP(View view){
-        Intent intent = new Intent(this, SignUpSP.class);
+    public void signUpC(View view){
+        Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
         finish();
     }
 }
-

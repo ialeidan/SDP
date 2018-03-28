@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,7 +10,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="sdp01.sdp.com.sdp01.SignUpActivity">
+    tools:context=".SignUpSP">
 
     <!-- Login progress -->
     <ProgressBar
@@ -38,7 +40,7 @@
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_username"
+                    android:hint="SP Name"
                     android:inputType="text|textPersonName"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -117,9 +119,11 @@
                 android:layout_height="wrap_content"
                 android:alpha="0.5"
                 android:background="@null"
-                android:onClick="signUpSP"
-                android:text="Sign Up as SP" />
+                android:onClick="signUpC"
+                android:text="Sign Up as Customer" />
 
         </LinearLayout>
     </ScrollView>
+
+
 </LinearLayout>
