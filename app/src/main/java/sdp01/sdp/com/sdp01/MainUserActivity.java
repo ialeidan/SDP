@@ -19,6 +19,7 @@ import android.view.MenuItem;
 
 import sdp01.sdp.com.sdp01.data_source.DataSource;
 import sdp01.sdp.com.sdp01.dummy.DummyContent;
+import sdp01.sdp.com.sdp01.util.AuthInfo;
 
 public class MainUserActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -31,15 +32,13 @@ public class MainUserActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         // If not signed in, go to login screen.
-        if (!DataSource.isSingedIn()) {
+        if (!AuthInfo.isLoggedIn()) {
+            AuthInfo.clearToken();
             Intent intent = new Intent(MainUserActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
         }
-
-        // TODO: Thread to Refresh Topken and sign in again.
-
 
         setContentView(R.layout.activity_main_user);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -119,7 +118,10 @@ public class MainUserActivity extends AppCompatActivity
         } else if (id == R.id.nav_aboutus) {
             fragment = new AboutUsFragment();
         } else if (id == R.id.nav_logout) {
-            // TODO: LOGOUT.
+            AuthInfo.clearToken();
+            Intent intent = new Intent(MainUserActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         if (fragment != null) {

@@ -1,13 +1,7 @@
 package sdp01.sdp.com.sdp01.data_source;
 
 import android.text.TextUtils;
-
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-
 import org.json.JSONObject;
-
-import sdp01.sdp.com.sdp01.util.AuthInfo;
 import sdp01.sdp.com.sdp01.util.Networking;
 
 /**
@@ -45,35 +39,30 @@ public class DataSource {
     private static ErrorCode validationSignInFields(String email, String password) {
 
         if (TextUtils.isEmpty(email)) {
-            ErrorCode error = new ErrorCode(-102, "Email is required", "");
-            return error;
+            return new ErrorCode(-102, "Email is required", "");
         } else if (!(isEmailValid(email))) {
-            ErrorCode error = new ErrorCode(-102, "Please enter valid email", "");
-            return error;
+            return new ErrorCode(-102, "Please enter valid email", "");
         }
 
         if (TextUtils.isEmpty(password)) {
-            ErrorCode error = new ErrorCode(-103, "Password is required", "");
-            return error;
+            return new ErrorCode(-103, "Password is required", "");
         } else if (!(isPasswordValid(password))) {
-            ErrorCode error = new ErrorCode(-103, "Password must be more than 5 symbols", "");
-            return error;
+            return new ErrorCode(-103, "Password must be more than 5 symbols", "");
         }
         return null;
     }
 
     public static void signUpUser(String username, String phone, String email, String password, final DataSourceRequestListner listner) {
-        String userName = username;
         String userPhone = phone.replaceAll("\\s+", "");
         String userEmail = email.replaceAll("\\s+", "");
         String userPassword = password.replaceAll("\\s+", "");
 
 
-        ErrorCode error = validationSignUpFields(userName, userPhone, userEmail, userPassword);
+        ErrorCode error = validationSignUpFields(username, userPhone, userEmail, userPassword);
         if (error != null) {
             listner.onError(error);
         } else {
-            Networking.signUp(userName, userPhone, userEmail, userPassword, new DataSourceRequestListner() {
+            Networking.signUp(username, userPhone, userEmail, userPassword, new DataSourceRequestListner() {
                 @Override
                 public void onResponse(JSONObject response) {
                     listner.onResponse(response);
@@ -89,16 +78,15 @@ public class DataSource {
     }
 
     public static void signUpSP(String username, String phone, String email, String password, final DataSourceRequestListner listner) {
-        String userName = username;
         String userPhone = phone.replaceAll("\\s+", "");
         String userEmail = email.replaceAll("\\s+", "");
         String userPassword = password.replaceAll("\\s+", "");
 
-        ErrorCode error = validationSignUpFields(userName, userPhone, userEmail, userPassword);
+        ErrorCode error = validationSignUpFields(username, userPhone, userEmail, userPassword);
         if (error != null) {
             listner.onError(error);
         } else {
-            Networking.signUpSP(userName, userPhone, userEmail, userPassword, new DataSourceRequestListner() {
+            Networking.signUpSP(username, userPhone, userEmail, userPassword, new DataSourceRequestListner() {
                 @Override
                 public void onResponse(JSONObject response) {
                     listner.onResponse(response);
@@ -116,32 +104,25 @@ public class DataSource {
     private static ErrorCode validationSignUpFields(String name, String phone, String email, String password) {
 
         if (TextUtils.isEmpty(name)) {
-            ErrorCode error = new ErrorCode(-101, "Username is required", "");
-            return error;
+            return new ErrorCode(-101, "Username is required", "");
         }
 
         if (TextUtils.isEmpty(phone)) {
-            ErrorCode error = new ErrorCode(-104, "Phone number is required", "");
-            return error;
+            return new ErrorCode(-104, "Phone number is required", "");
         } else if (!(isPhoneValid(phone))) {
-            ErrorCode error = new ErrorCode(-104, "Please enter valid phone number", "");
-            return error;
+            return new ErrorCode(-104, "Please enter valid phone number", "");
         }
 
         if (TextUtils.isEmpty(email)) {
-            ErrorCode error = new ErrorCode(-102, "Email is required", "");
-            return error;
+            return new ErrorCode(-102, "Email is required", "");
         } else if (!(isEmailValid(email))) {
-            ErrorCode error = new ErrorCode(-102, "Please enter valid email", "");
-            return error;
+            return new ErrorCode(-102, "Please enter valid email", "");
         }
 
         if (TextUtils.isEmpty(password)) {
-            ErrorCode error = new ErrorCode(-103, "Password is required", "");
-            return error;
+            return new ErrorCode(-103, "Password is required", "");
         } else if (!(isPasswordValid(password))) {
-            ErrorCode error = new ErrorCode(-103, "Password must be more than 5 symbols", "");
-            return error;
+            return new ErrorCode(-103, "Password must be more than 5 symbols", "");
         }
 
         return null;
@@ -149,11 +130,6 @@ public class DataSource {
 
 
     // General
-    public static boolean isSingedIn() {
-        String user = AuthInfo.getUserLogin();
-        return user.length() > 0;
-    }
-
     private static boolean isEmailValid(String email) {
         email = email.replaceAll("\\s+", "");
         return (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches());

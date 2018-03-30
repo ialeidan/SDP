@@ -1,5 +1,7 @@
 package sdp01.sdp.com.sdp01.util;
 
+import android.content.Context;
+
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -13,89 +15,71 @@ import java.util.Base64;
 
 public class AuthInfo extends JSONObject {
 
+    private static final String PREF_USER_NAME= "sdp01.sdp.com.sdp01.username";
+    private static final String PREF_USER_EMAIL= "sdp01.sdp.com.sdp01.email";
+    private static final String PREF_USER_PHONE= "sdp01.sdp.com.sdp01.phone";
+    private static final String PREF_USER_ACCESSTOKEN= "sdp01.sdp.com.sdp01.access_token";
+    private static final String PREF_USER_USERID= "sdp01.sdp.com.sdp01.user_id";
+
     public AuthInfo(){
 
     }
 
     // Setters:
     public static void setUserID(String userID) {
-        SaveSharedPreference.setString("userID", userID);
+        SaveSharedPreference.setString(PREF_USER_USERID, userID);
     }
 
     public static void setUserName(String userName) {
-        SaveSharedPreference.setString("userName", userName);
+        SaveSharedPreference.setString(PREF_USER_NAME, userName);
     }
 
-    public static void setUserLogin(String userLogin) {
-        SaveSharedPreference.setString("userEmail", userLogin);
-    }
-
-    public static void setUserPassword(String userPassword) {
-        try {
-            byte[] utf8str = userPassword.getBytes("UTF-8");
-            String base64Encoded = Base64.getEncoder().encodeToString(utf8str);
-            SaveSharedPreference.setString("userPassword", base64Encoded);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void setTokenType(String tokenType) {
-        SaveSharedPreference.setString("tokenType", tokenType);
+    public static void setUserEmail(String userEmail) {
+        SaveSharedPreference.setString(PREF_USER_EMAIL, userEmail);
     }
 
     public static void setAccessToken(String accessToken) {
-        SaveSharedPreference.setString("accessToken", accessToken);
+        SaveSharedPreference.setString(PREF_USER_ACCESSTOKEN, accessToken);
     }
 
-    public static void setRefreshToken(String refreshToken) {
-        SaveSharedPreference.setString("refreshToken", refreshToken);
+    public static void setPhone(String phone) {
+        SaveSharedPreference.setString(PREF_USER_PHONE, phone);
     }
 
 
     // Getters:
     public static String getUserID() {
-        return SaveSharedPreference.getString("userID");
+        return SaveSharedPreference.getString(PREF_USER_USERID);
     }
 
     public static String getUserName() {
-        return SaveSharedPreference.getString("userName");
+        return SaveSharedPreference.getString(PREF_USER_NAME);
     }
 
-    public static String getUserLogin() {
-        return SaveSharedPreference.getString("userEmail");
-    }
-
-    public static String getUserPassword() {
-        String decodeStr = SaveSharedPreference.getString("userPassword");
-        byte[] base64Decoded = Base64.getDecoder().decode(decodeStr);
-        try {
-            return new String(base64Decoded, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    public static String getTokenType() {
-        return SaveSharedPreference.getString("tokenType");
+    public static String getUserEmail() {
+        return SaveSharedPreference.getString(PREF_USER_EMAIL);
     }
 
     public static String getAccessToken() {
-        return SaveSharedPreference.getString("accessToken");
+        return SaveSharedPreference.getString(PREF_USER_ACCESSTOKEN);
     }
 
-    public static String getRefreshToken() {
-        return SaveSharedPreference.getString("refreshToken");
+    public static String getPhone() {
+        return SaveSharedPreference.getString(PREF_USER_PHONE);
     }
-
-
 
 
     public static void clearToken() {
+        setUserID(null);
+        setUserName(null);
+        setUserEmail(null);
         setAccessToken(null);
-        setRefreshToken(null);
-        setTokenType(null);
+        setPhone(null);
+    }
+
+    public static boolean isLoggedIn(){
+        String access_token = getAccessToken();
+        return (access_token.length() != 0);
     }
 
 }

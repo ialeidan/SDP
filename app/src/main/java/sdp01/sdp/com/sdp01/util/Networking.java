@@ -1,6 +1,5 @@
 package sdp01.sdp.com.sdp01.util;
 
-import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -19,9 +18,8 @@ import sdp01.sdp.com.sdp01.data_source.ErrorCode;
 
 public class Networking {
 
-    //TODO: Change JSONObjects to our server specifications.
-    private final static String URL = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/";
-    private final static String API_KEY = "AIzaSyAyi-cQ6qbHVLpgl4ZQSmp35ZDJwLsXmpw";
+
+    private final static String URL = "https://scala-sdp.herokuapp.com/";
 
     // Login with email and password
     public static void authenticateUser(final String email, final String password, final DataSourceRequestListner listener) {
@@ -29,34 +27,27 @@ public class Networking {
         try {
             jsonObject.put("email", email);
             jsonObject.put("password", password);
-            jsonObject.put("returnSecureToken", true);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
-        AndroidNetworking.post(URL + "verifyPassword?key=" + API_KEY)
+        AndroidNetworking.post(URL + "auth/login")
                 .addJSONObjectBody(jsonObject)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        String idToken, refreshToken, expiresIn, localId;
+                        String user_id, access_token;
 
                         try {
-                            idToken = response.getString("idToken");
-                            refreshToken = response.getString("refreshToken");
-                            expiresIn = response.getString("expiresIn");
-                            localId = response.getString("localId");
+                            user_id = response.getString("user_id");
+                            access_token = response.getString("access_token");
 
-                            AuthInfo.setUserID(localId);
-                            AuthInfo.setUserLogin(email);
-                            AuthInfo.setUserPassword(password);
-                            AuthInfo.setRefreshToken(refreshToken);
-                            AuthInfo.setAccessToken(idToken);
-                            AuthInfo.setTokenType(expiresIn);       //TODO: Change!
-
+                            AuthInfo.setUserID(user_id);
+                            AuthInfo.setUserEmail(email);
+                            AuthInfo.setAccessToken(access_token);
 
                             listener.onResponse(response);
 
@@ -77,16 +68,14 @@ public class Networking {
                         try {
                             error = new JSONObject(anError.getErrorBody());
 
-                            if (error != null) {
-                                code = error.getJSONObject("error").getJSONArray("errors").getJSONObject(0).getString("message");
-
-                                if (code.equals("EMAIL_NOT_FOUND")) {
-                                    listener.onError(new ErrorCode(-11, "EMAIL_NOT_FOUND", ""));
-                                } else if (code.equals("INVALID_PASSWORD")) {
-                                    listener.onError(new ErrorCode(-12, "INVALID_PASSWORD", ""));
-                                } else {
-                                    listener.onError(new ErrorCode(-13, "Error Signing In", ""));
-                                }
+//                            code = error.getJSONObject("error").getJSONArray("errors").getJSONObject(0).getString("message");
+                            code = error.getString("message");
+                            if (code.equals("EMAIL_NOT_FOUND")) {
+                                listener.onError(new ErrorCode(-11, "EMAIL_NOT_FOUND", ""));
+                            } else if (code.equals("INVALID_PASSWORD")) {
+                                listener.onError(new ErrorCode(-12, "INVALID_PASSWORD", ""));
+                            } else {
+                                listener.onError(new ErrorCode(-13, "Error Signing In", ""));
                             }
 
                         } catch (JSONException e) {
@@ -98,37 +87,35 @@ public class Networking {
     }
 
     // Sign Up new user.
-    public static void signUp(String username, String phone, final String email, final String password, final DataSourceRequestListner listener) {
+    public static void signUp(final String username, final String phone, final String email, final String password, final DataSourceRequestListner listener) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("email", email);
             jsonObject.put("password", password);
-            jsonObject.put("returnSecureToken", true);
+            jsonObject.put("phone", phone);
+            jsonObject.put("username", username);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        AndroidNetworking.post(URL + "signupNewUser?key=" + API_KEY)
+        AndroidNetworking.post(URL + "auth/customer/register")
                 .addJSONObjectBody(jsonObject)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        String idToken, refreshToken, expiresIn, localId;
+                        String user_id, access_token;
 
                         try {
-                            idToken = response.getString("idToken");
-                            refreshToken = response.getString("refreshToken");
-                            expiresIn = response.getString("expiresIn");
-                            localId = response.getString("localId");
+                            user_id = response.getString("user_id");
+                            access_token = response.getString("access_token");
 
-                            AuthInfo.setUserID(localId);
-                            AuthInfo.setUserLogin(email);
-                            AuthInfo.setUserPassword(password);
-                            AuthInfo.setRefreshToken(refreshToken);
-                            AuthInfo.setAccessToken(idToken);
-                            AuthInfo.setTokenType(expiresIn);       //TODO: Change!
+                            AuthInfo.setUserID(user_id);
+                            AuthInfo.setUserEmail(email);
+                            AuthInfo.setUserName(username);
+                            AuthInfo.setAccessToken(access_token);
+                            AuthInfo.setPhone(phone);
 
 
                             listener.onResponse(response);
@@ -149,14 +136,12 @@ public class Networking {
                         try {
                             error = new JSONObject(anError.getErrorBody());
 
-                            if (error != null) {
-                                code = error.getJSONObject("error").getJSONArray("errors").getJSONObject(0).getString("message");
-
-                                if (code.equals("EMAIL_EXISTS")) {
-                                    listener.onError(new ErrorCode(-21, "EMAIL_EXISTS", ""));
-                                } else {
-                                    listener.onError(new ErrorCode(-23, "Error Signing Up", ""));
-                                }
+//                            code = error.getJSONObject("error").getJSONArray("errors").getJSONObject(0).getString("message");
+                            code = error.getString("message");
+                            if (code.equals("EMAIL_EXISTS")) {
+                                listener.onError(new ErrorCode(-21, "EMAIL_EXISTS", ""));
+                            } else {
+                                listener.onError(new ErrorCode(-23, "Error Signing Up", ""));
                             }
 
                         } catch (JSONException e) {
@@ -169,37 +154,36 @@ public class Networking {
     }
 
     // Sign Up new SP.
-    public static void signUpSP(String username, String phone, final String email, final String password, final DataSourceRequestListner listener) {
+    public static void signUpSP(final String username, final String phone, final String email, final String password, final DataSourceRequestListner listener) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("email", email);
             jsonObject.put("password", password);
-            jsonObject.put("returnSecureToken", true);
+            jsonObject.put("phone", phone);
+            jsonObject.put("username", username);
+//            jsonObject.put("device", device);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        AndroidNetworking.post(URL + "signupNewUser?key=" + API_KEY)
+        AndroidNetworking.post(URL + "auth/sp/register")
                 .addJSONObjectBody(jsonObject)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        String idToken, refreshToken, expiresIn, localId;
+                        String user_id, access_token;
 
                         try {
-                            idToken = response.getString("idToken");
-                            refreshToken = response.getString("refreshToken");
-                            expiresIn = response.getString("expiresIn");
-                            localId = response.getString("localId");
+                            user_id = response.getString("user_id");
+                            access_token = response.getString("access_token");
 
-                            AuthInfo.setUserID(localId);
-                            AuthInfo.setUserLogin(email);
-                            AuthInfo.setUserPassword(password);
-                            AuthInfo.setRefreshToken(refreshToken);
-                            AuthInfo.setAccessToken(idToken);
-                            AuthInfo.setTokenType(expiresIn);       //TODO: Change!
+                            AuthInfo.setUserID(user_id);
+                            AuthInfo.setUserEmail(email);
+                            AuthInfo.setUserName(username);
+                            AuthInfo.setAccessToken(access_token);
+                            AuthInfo.setPhone(phone);
 
 
                             listener.onResponse(response);
@@ -220,14 +204,13 @@ public class Networking {
                         try {
                             error = new JSONObject(anError.getErrorBody());
 
-                            if (error != null) {
-                                code = error.getJSONObject("error").getJSONArray("errors").getJSONObject(0).getString("message");
+//                            code = error.getJSONObject("error").getJSONArray("errors").getJSONObject(0).getString("message");
+                            code = error.getString("message");
 
-                                if (code.equals("EMAIL_EXISTS")) {
-                                    listener.onError(new ErrorCode(-21, "EMAIL_EXISTS", ""));
-                                } else {
-                                    listener.onError(new ErrorCode(-23, "Error Signing Up", ""));
-                                }
+                            if (code.equals("EMAIL_EXISTS")) {
+                                listener.onError(new ErrorCode(-21, "EMAIL_EXISTS", ""));
+                            } else {
+                                listener.onError(new ErrorCode(-23, "Error Signing Up", ""));
                             }
 
                         } catch (JSONException e) {
