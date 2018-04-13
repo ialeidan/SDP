@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sdp01.sdp.com.sdp01.data_source.DataSource;
-import sdp01.sdp.com.sdp01.data_source.DataSourceRequestListner;
+import sdp01.sdp.com.sdp01.data_source.DataSourceRequestListener;
 import sdp01.sdp.com.sdp01.data_source.ErrorCode;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -161,7 +161,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         showProgress(true);
 
 
-        DataSource.signUpUser(username, phone, email, password, new DataSourceRequestListner() {
+        DataSource.signUpUser(username, phone, email, password, new DataSourceRequestListener() {
 
             View focusView = null;
 

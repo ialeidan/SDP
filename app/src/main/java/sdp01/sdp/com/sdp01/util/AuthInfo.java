@@ -20,8 +20,12 @@ public class AuthInfo extends JSONObject {
     private static final String PREF_USER_PHONE= "sdp01.sdp.com.sdp01.phone";
     private static final String PREF_USER_ACCESSTOKEN= "sdp01.sdp.com.sdp01.access_token";
     private static final String PREF_USER_USERID= "sdp01.sdp.com.sdp01.user_id";
+    private static final String PREF_USER_TYPE= "sdp01.sdp.com.sdp01.type";
 
-    public AuthInfo(){
+    private static final String PREF_REQUEST_ID= "sdp01.sdp.com.sdp01.request_id";
+
+
+    private AuthInfo(){
 
     }
 
@@ -46,6 +50,13 @@ public class AuthInfo extends JSONObject {
         SaveSharedPreference.setString(PREF_USER_PHONE, phone);
     }
 
+    public static void setUserType(String type) {
+        SaveSharedPreference.setString(PREF_USER_TYPE, type);
+    }
+
+    public static void setRequestId(String request_id) {
+        SaveSharedPreference.setString(PREF_REQUEST_ID, request_id);
+    }
 
     // Getters:
     public static String getUserID() {
@@ -68,6 +79,13 @@ public class AuthInfo extends JSONObject {
         return SaveSharedPreference.getString(PREF_USER_PHONE);
     }
 
+    public static String getUserType() {
+        return SaveSharedPreference.getString(PREF_USER_TYPE);
+    }
+
+    public static String getRequestId() {
+        return SaveSharedPreference.getString(PREF_REQUEST_ID);
+    }
 
     public static void clearToken() {
         setUserID(null);
@@ -75,6 +93,7 @@ public class AuthInfo extends JSONObject {
         setUserEmail(null);
         setAccessToken(null);
         setPhone(null);
+        setUserType(null);
     }
 
     public static boolean isLoggedIn(){

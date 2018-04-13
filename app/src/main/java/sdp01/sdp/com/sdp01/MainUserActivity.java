@@ -17,15 +17,28 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.json.JSONObject;
+
+import sdp01.sdp.com.sdp01.customer.BidFragment;
 import sdp01.sdp.com.sdp01.data_source.DataSource;
+import sdp01.sdp.com.sdp01.data_source.DataSourceRequestListener;
+import sdp01.sdp.com.sdp01.data_source.ErrorCode;
 import sdp01.sdp.com.sdp01.dummy.DummyContent;
+import sdp01.sdp.com.sdp01.models.Bid;
+import sdp01.sdp.com.sdp01.models.History;
+import sdp01.sdp.com.sdp01.models.Request;
+import sdp01.sdp.com.sdp01.sp.RequestFragment;
 import sdp01.sdp.com.sdp01.util.AuthInfo;
+import sdp01.sdp.com.sdp01.util.Networking;
+
 
 public class MainUserActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         UserMainFragment.OnFragmentInteractionListener,
         HistoryFragment.OnListFragmentInteractionListener,
-        AboutUsFragment.OnFragmentInteractionListener{
+        AboutUsFragment.OnFragmentInteractionListener,
+        BidFragment.OnListFragmentInteractionListener,
+        RequestFragment.OnListFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +75,23 @@ public class MainUserActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
         navigationView.setCheckedItem(R.id.nav_home);
 
-        //NOTE:  Open fragment1 initially.
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.mainFrame, new UserMainFragment());
-        ft.commit();
+        // Check if SP or Customer
+        String type = AuthInfo.getUserType();
+        if (type.equals("SP")){
+            //NOTE:  Open fragment1 initially.
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.mainFrame, new RequestFragment());
+            ft.commit();
+        }else{
+            //NOTE:  Open fragment1 initially.
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.mainFrame, new UserMainFragment());
+            ft.commit();
+        }
+
+
     }
 
     @Override
@@ -112,7 +134,20 @@ public class MainUserActivity extends AppCompatActivity
 
         Fragment fragment = null;
         if (id == R.id.nav_home) {
-            fragment = new UserMainFragment();
+            //TODO: check if customer or SP:
+            // Check if SP or Customer
+            String type = AuthInfo.getUserType();
+            if (type.equals("SP")){
+                //NOTE:  Open fragment1 initially.
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.mainFrame, new RequestFragment());
+                ft.commit();
+            }else{
+                //NOTE:  Open fragment1 initially.
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.mainFrame, new UserMainFragment());
+                ft.commit();
+            }
         } else if (id == R.id.nav_history) {
             fragment = new HistoryFragment();
         } else if (id == R.id.nav_aboutus) {
@@ -141,7 +176,17 @@ public class MainUserActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(String title, DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(String title, History item) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void onListFragmentInteraction(String title, Bid item) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void onListFragmentInteraction(String title, Request item) {
         getSupportActionBar().setTitle(title);
     }
 }

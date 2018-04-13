@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sdp01.sdp.com.sdp01.data_source.DataSource;
-import sdp01.sdp.com.sdp01.data_source.DataSourceRequestListner;
+import sdp01.sdp.com.sdp01.data_source.DataSourceRequestListener;
 import sdp01.sdp.com.sdp01.data_source.ErrorCode;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -69,7 +69,7 @@ public class SignUpSP extends AppCompatActivity implements LoaderCallbacks<Curso
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-//                    attemptSignup();
+                    attemptSignup();
                     return true;
                 }
                 return false;
@@ -80,7 +80,7 @@ public class SignUpSP extends AppCompatActivity implements LoaderCallbacks<Curso
         mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                attemptSignup();
+                attemptSignup();
             }
         });
 
@@ -157,7 +157,7 @@ public class SignUpSP extends AppCompatActivity implements LoaderCallbacks<Curso
         showProgress(true);
 
         // TODO: SIGN UP.
-        DataSource.signUpSP(username, phone, email, password, new DataSourceRequestListner() {
+        DataSource.signUpSP(username, phone, email, password, new DataSourceRequestListener() {
 
             View focusView = null;
 

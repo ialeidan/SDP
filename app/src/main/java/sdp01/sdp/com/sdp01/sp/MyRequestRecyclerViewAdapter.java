@@ -1,15 +1,15 @@
-package sdp01.sdp.com.sdp01;
+package sdp01.sdp.com.sdp01.sp;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import sdp01.sdp.com.sdp01.HistoryFragment.OnListFragmentInteractionListener;
-import sdp01.sdp.com.sdp01.dummy.DummyContent.DummyItem;
-import sdp01.sdp.com.sdp01.models.History;
+import sdp01.sdp.com.sdp01.R;
+import sdp01.sdp.com.sdp01.models.Request;
+import sdp01.sdp.com.sdp01.sp.RequestFragment.OnListFragmentInteractionListener;
+import sdp01.sdp.com.sdp01.sp.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
@@ -18,12 +18,13 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecyclerViewAdapter.ViewHolder> {
+public class MyRequestRecyclerViewAdapter extends RecyclerView.Adapter<MyRequestRecyclerViewAdapter.ViewHolder> {
 
-    private final List<History> mValues;
+    private final List<Request> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public HistoryRecyclerViewAdapter(List<History> items, OnListFragmentInteractionListener listener) {
+
+    public MyRequestRecyclerViewAdapter(List<Request> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -31,18 +32,15 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_history, parent, false);
+                .inflate(R.layout.fragment_request, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getHistory_id());
-        holder.mContentView.setText(mValues.get(position).getRating());
-        holder.mContentView1.setText("jlshgjlhg");
-        holder.mContentView2.setText("jlshgjlhg");
-
+        holder.mIdView.setText(mValues.get(position).getRequest_id());
+        holder.mContentView.setText(mValues.get(position).getService());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,8 +48,7 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction("History", holder.mItem);
-                    Log.e("History_ITEM", holder.mItem.getStatus());
+                    mListener.onListFragmentInteraction("Requests", holder.mItem);
                 }
             }
         });
@@ -66,17 +63,13 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public final TextView mContentView1;
-        public final TextView mContentView2;
-        public History mItem;
+        public Request mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.status);
-            mContentView = (TextView) view.findViewById(R.id.time);
-            mContentView1 = (TextView) view.findViewById(R.id.location);
-            mContentView2 = (TextView) view.findViewById(R.id.sp);
+            mIdView = (TextView) view.findViewById(R.id.item_number);
+            mContentView = (TextView) view.findViewById(R.id.content);
         }
 
         @Override

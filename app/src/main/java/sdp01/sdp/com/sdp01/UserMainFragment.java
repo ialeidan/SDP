@@ -1,6 +1,7 @@
 package sdp01.sdp.com.sdp01;
 
 import android.Manifest;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -34,6 +35,17 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import sdp01.sdp.com.sdp01.customer.BidFragment;
+import sdp01.sdp.com.sdp01.customer.PaymentFragment;
+import sdp01.sdp.com.sdp01.customer.ServiceFragment;
+import sdp01.sdp.com.sdp01.data_source.DataSourceRequestListener;
+import sdp01.sdp.com.sdp01.data_source.ErrorCode;
+import sdp01.sdp.com.sdp01.util.AuthInfo;
+import sdp01.sdp.com.sdp01.util.Networking;
 
 
 /**
@@ -112,7 +124,53 @@ public class UserMainFragment extends Fragment implements OnMapReadyCallback, Vi
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        status();
+    }
 
+    public void status() {
+        Networking.getStatus(new DataSourceRequestListener() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String status = response.getString("status");
+
+                    Log.e("USER_STATUS", status);
+                    Fragment fragment = null;
+                    if (status.equals("not service")){
+                        // Stay in this screen
+                    }else if (status.equals("requesting")){
+                        // Go to BidFragment to wait for Bids.
+                        fragment = new BidFragment();
+                    }else if (status.equals("in service")){
+                        // Go to ServiceFragment.
+                        fragment = new ServiceFragment();
+                    }else if (status.equals("payment")){
+                        // Go to PaymentFragment.
+                        fragment = new PaymentFragment();
+                    }
+
+                    if (fragment != null) {
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.replace(R.id.mainFrame, fragment);
+                        ft.commit();
+                    }
+
+
+                } catch (JSONException e) {
+                    // Error handling.
+                    // TODO
+                    e.printStackTrace();
+                    Log.e("USER_STATUS", response.toString());
+                }
+            }
+
+            @Override
+            public void onError(ErrorCode anError) {
+                // Error handling.
+                // TODO
+                Log.e("USER_STATUS", anError.info);
+            }
+        });
     }
 
     @Override
@@ -131,6 +189,9 @@ public class UserMainFragment extends Fragment implements OnMapReadyCallback, Vi
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+
 
         request = view.findViewById(R.id.request);
         service1 = view.findViewById(R.id.service1);
@@ -189,8 +250,55 @@ public class UserMainFragment extends Fragment implements OnMapReadyCallback, Vi
     // MARK: - Buttons.
     public void requestService(View view) {
         LatLng center = googleMap.getCameraPosition().target;
-
         Log.e("MAP", center.latitude + "//" + center.longitude);
+
+        String service = "";
+        Location location = new Location("loc");
+        location.setLatitude(center.latitude);
+        location.setLongitude(center.longitude);
+
+        switch (selectedService){
+            case 1:
+                service = "Oil";
+                break;
+            case 2:
+                service = "Gas";
+                break;
+            case 3:
+                service = "Maintenance";
+                break;
+        }
+
+        Networking.sendRequest(service, location, new DataSourceRequestListener() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    String status = response.getString("request");
+                    if (status.equals("error")){
+                        //TODO
+                        return;
+                    }
+
+                    String request_id = response.getString("request_id");
+                    AuthInfo.setRequestId(request_id);
+
+                    Fragment fragment = new BidFragment();
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.mainFrame, fragment);
+                    ft.commit();
+
+                } catch (JSONException e) {
+                    // TODO
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(ErrorCode anError) {
+                // TODO
+            }
+        });
 
     }
 

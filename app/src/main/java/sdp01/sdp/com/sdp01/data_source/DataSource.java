@@ -2,6 +2,8 @@ package sdp01.sdp.com.sdp01.data_source;
 
 import android.text.TextUtils;
 import org.json.JSONObject;
+
+import sdp01.sdp.com.sdp01.util.AuthInfo;
 import sdp01.sdp.com.sdp01.util.Networking;
 
 /**
@@ -13,7 +15,7 @@ public class DataSource {
 
     // MARK: - Authorization.
 
-    public static void signinUser(String email, String password, final DataSourceRequestListner listner) {
+    public static void signinUser(String email, String password, final DataSourceRequestListener listner) {
         String userEmail = email.replaceAll("\\s+", "");
         String userPassword = password.replaceAll("\\s+", "");
 
@@ -21,7 +23,7 @@ public class DataSource {
         if (error != null) {
             listner.onError(error);
         } else {
-            Networking.authenticateUser(userEmail, userPassword, new DataSourceRequestListner() {
+            Networking.authenticateUser(userEmail, userPassword, new DataSourceRequestListener() {
                 @Override
                 public void onResponse(JSONObject response) {
                     listner.onResponse(response);
@@ -52,7 +54,7 @@ public class DataSource {
         return null;
     }
 
-    public static void signUpUser(String username, String phone, String email, String password, final DataSourceRequestListner listner) {
+    public static void signUpUser(String username, String phone, String email, String password, final DataSourceRequestListener listner) {
         String userPhone = phone.replaceAll("\\s+", "");
         String userEmail = email.replaceAll("\\s+", "");
         String userPassword = password.replaceAll("\\s+", "");
@@ -62,7 +64,7 @@ public class DataSource {
         if (error != null) {
             listner.onError(error);
         } else {
-            Networking.signUp(username, userPhone, userEmail, userPassword, new DataSourceRequestListner() {
+            Networking.signUp(username, userPhone, userEmail, userPassword, new DataSourceRequestListener() {
                 @Override
                 public void onResponse(JSONObject response) {
                     listner.onResponse(response);
@@ -77,7 +79,7 @@ public class DataSource {
 
     }
 
-    public static void signUpSP(String username, String phone, String email, String password, final DataSourceRequestListner listner) {
+    public static void signUpSP(String username, String phone, String email, String password, final DataSourceRequestListener listner) {
         String userPhone = phone.replaceAll("\\s+", "");
         String userEmail = email.replaceAll("\\s+", "");
         String userPassword = password.replaceAll("\\s+", "");
@@ -86,7 +88,7 @@ public class DataSource {
         if (error != null) {
             listner.onError(error);
         } else {
-            Networking.signUpSP(username, userPhone, userEmail, userPassword, new DataSourceRequestListner() {
+            Networking.signUpSP(username, userPhone, userEmail, userPassword, new DataSourceRequestListener() {
                 @Override
                 public void onResponse(JSONObject response) {
                     listner.onResponse(response);
@@ -126,6 +128,21 @@ public class DataSource {
         }
 
         return null;
+    }
+
+
+    // Getting History
+    public static void getHistory(final DataSourceRequestListener listener){
+        Networking.getHistory(new DataSourceRequestListener() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    listener.onResponse(response);
+                }
+                @Override
+                public void onError(ErrorCode anError) {
+                    listener.onError(anError);
+                }
+            });
     }
 
 
