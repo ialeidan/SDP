@@ -168,7 +168,7 @@ public class UserMainFragment extends Fragment implements OnMapReadyCallback, Vi
             public void onError(ErrorCode anError) {
                 // Error handling.
                 // TODO
-                Log.e("USER_STATUS", anError.info);
+                Log.e("USER_STATUS", anError.info + anError.comment);
             }
         });
     }

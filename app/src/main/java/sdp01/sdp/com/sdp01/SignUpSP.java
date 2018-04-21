@@ -49,6 +49,7 @@ public class SignUpSP extends AppCompatActivity implements LoaderCallbacks<Curso
     // UI references.
     private EditText mUsernameView;
     private EditText mPhonenumberView;
+    private EditText mDevicenumberView;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -61,6 +62,7 @@ public class SignUpSP extends AppCompatActivity implements LoaderCallbacks<Curso
         // Set up the login form.
         mUsernameView = (EditText) findViewById(R.id.username);
         mPhonenumberView = (EditText) findViewById(R.id.phone);
+        mDevicenumberView = (EditText) findViewById(R.id.device);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -150,6 +152,7 @@ public class SignUpSP extends AppCompatActivity implements LoaderCallbacks<Curso
         // Store values at the time of the login attempt.
         String username = mUsernameView.getText().toString();
         String phone = mPhonenumberView.getText().toString();
+        String device = mDevicenumberView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
@@ -157,7 +160,7 @@ public class SignUpSP extends AppCompatActivity implements LoaderCallbacks<Curso
         showProgress(true);
 
         // TODO: SIGN UP.
-        DataSource.signUpSP(username, phone, email, password, new DataSourceRequestListener() {
+        DataSource.signUpSP(username, phone, email, password, device, new DataSourceRequestListener() {
 
             View focusView = null;
 

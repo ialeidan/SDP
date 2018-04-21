@@ -1,14 +1,28 @@
 package sdp01.sdp.com.sdp01.sp;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import sdp01.sdp.com.sdp01.R;
+import sdp01.sdp.com.sdp01.data_source.DataSourceRequestListener;
+import sdp01.sdp.com.sdp01.data_source.ErrorCode;
+import sdp01.sdp.com.sdp01.util.AuthInfo;
+import sdp01.sdp.com.sdp01.util.Networking;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +43,9 @@ public class BidStatusFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private TextView textView;
+    private Context context = null;
 
     public BidStatusFragment() {
         // Required empty public constructor
@@ -59,21 +76,35 @@ public class BidStatusFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        context = container.getContext();
+
+        if (mListener != null) {
+            mListener.onFragmentInteraction("Bid Status");
+        }
+
         return inflater.inflate(R.layout.fragment_bid_status, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        textView = (TextView) getView().findViewById(R.id.bid_status);
+        getBidStatus();
     }
+
+//    // TODO: Rename method, update argument and hook method into UI event
+//    public void onButtonPressed(Uri uri) {
+//        if (mListener != null) {
+//            mListener.onFragmentInteraction(uri);
+//        }
+//    }
 
     @Override
     public void onAttach(Context context) {
@@ -104,6 +135,67 @@ public class BidStatusFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String title);
     }
+
+    public void getBidStatus() {
+
+        Networking.getBidStatus(AuthInfo.getRequestId(), new DataSourceRequestListener() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String status = response.getString("status");
+                    if (status.equals("error")){
+                        //TODO
+                        return;
+                    }
+
+
+                    if (status.equals("canceled")) {
+                        AlertDialog.Builder creditDialog = new AlertDialog.Builder(context);
+                        creditDialog.setTitle("Declined")
+                                .setMessage("Customer Declined Bid")
+                                .setNeutralButton("cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        AuthInfo.setRequestId(null);
+                                        Fragment fragment = new RequestFragment();
+                                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                        ft.replace(R.id.mainFrame, fragment);
+                                        ft.commit();
+                                    }
+                                }).show();
+                    } else if (status.equals("waiting")) {
+                        textView.setText("Still waiting for Customer Answer");
+                    } else if (status.equals("accepted")) {
+                        AlertDialog.Builder creditDialog = new AlertDialog.Builder(context);
+                        creditDialog.setTitle("Accepted")
+                                .setMessage("Customer Accepted Bid")
+                                .setNeutralButton("ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        AuthInfo.setRequestId(null);
+                                        Fragment fragment = new SPServiceFragment();
+                                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                        ft.replace(R.id.mainFrame, fragment);
+                                        ft.commit();
+                                    }
+                                }).show();
+                    }
+
+                } catch (JSONException e) {
+                    // TODO
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(ErrorCode anError) {
+                // TODO
+                Log.e("ERROR_BIDSTATUS", anError.info + " " + anError.comment);
+            }
+        });
+
+    }
+
 }

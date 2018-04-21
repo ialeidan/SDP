@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import org.json.JSONObject;
 
 import sdp01.sdp.com.sdp01.customer.BidFragment;
+import sdp01.sdp.com.sdp01.customer.PaymentFragment;
+import sdp01.sdp.com.sdp01.customer.ServiceFragment;
 import sdp01.sdp.com.sdp01.data_source.DataSource;
 import sdp01.sdp.com.sdp01.data_source.DataSourceRequestListener;
 import sdp01.sdp.com.sdp01.data_source.ErrorCode;
@@ -27,7 +29,9 @@ import sdp01.sdp.com.sdp01.dummy.DummyContent;
 import sdp01.sdp.com.sdp01.models.Bid;
 import sdp01.sdp.com.sdp01.models.History;
 import sdp01.sdp.com.sdp01.models.Request;
+import sdp01.sdp.com.sdp01.sp.BidStatusFragment;
 import sdp01.sdp.com.sdp01.sp.RequestFragment;
+import sdp01.sdp.com.sdp01.sp.SPServiceFragment;
 import sdp01.sdp.com.sdp01.util.AuthInfo;
 import sdp01.sdp.com.sdp01.util.Networking;
 
@@ -38,7 +42,11 @@ public class MainUserActivity extends AppCompatActivity
         HistoryFragment.OnListFragmentInteractionListener,
         AboutUsFragment.OnFragmentInteractionListener,
         BidFragment.OnListFragmentInteractionListener,
-        RequestFragment.OnListFragmentInteractionListener{
+        RequestFragment.OnListFragmentInteractionListener,
+        BidStatusFragment.OnFragmentInteractionListener,
+        ServiceFragment.OnFragmentInteractionListener,
+        SPServiceFragment.OnFragmentInteractionListener,
+        PaymentFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,4 +197,5 @@ public class MainUserActivity extends AppCompatActivity
     public void onListFragmentInteraction(String title, Request item) {
         getSupportActionBar().setTitle(title);
     }
+
 }

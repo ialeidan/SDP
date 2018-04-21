@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,7 @@ import sdp01.sdp.com.sdp01.data_source.ErrorCode;
 import sdp01.sdp.com.sdp01.dummy.DummyContent;
 import sdp01.sdp.com.sdp01.dummy.DummyContent.DummyItem;
 import sdp01.sdp.com.sdp01.models.History;
+import sdp01.sdp.com.sdp01.sp.MyRequestRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +34,15 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class HistoryFragment extends Fragment {
+public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     HistoryRecyclerViewAdapter ha;
     public static final List<History> ITEMS = new ArrayList<History>();
@@ -67,7 +71,6 @@ public class HistoryFragment extends Fragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
-        getHistory();
     }
 
     @Override
@@ -79,23 +82,69 @@ public class HistoryFragment extends Fragment {
             mListener.onListFragmentInteraction("History", null);
         }
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            ha = new HistoryRecyclerViewAdapter(ITEMS, mListener);
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(ha);
-        }
+//        if (view instanceof RecyclerView) {
+//            Context context = view.getContext();
+//            RecyclerView recyclerView = (RecyclerView) view;
+//            ha = new HistoryRecyclerViewAdapter(ITEMS, mListener);
+//            if (mColumnCount <= 1) {
+//                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+//            } else {
+//                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+//            }
+//            recyclerView.setAdapter(ha);
+//        }
 
 
 
         return view;
     }
 
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        // Fetching data from server
+        getHistory();
+    }
+
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        ha = new HistoryRecyclerViewAdapter(ITEMS, mListener);
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+        }
+        recyclerView.setAdapter(ha);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+
+        // SwipeRefreshLayout
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+
+//        getRequests();
+        /**
+         * Showing Swipe Refresh animation on activity create
+         * As animation won't start on onCreate, post runnable is used
+         */
+        mSwipeRefreshLayout.post(new Runnable() {
+
+            @Override
+            public void run() {
+
+                mSwipeRefreshLayout.setRefreshing(true);
+
+                // Fetching data from server
+                getHistory();
+            }
+        });
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -132,9 +181,11 @@ public class HistoryFragment extends Fragment {
 
     public void getHistory(){
         Log.e("History", "HI");
+        mSwipeRefreshLayout.setRefreshing(true);
         DataSource.getHistory(new DataSourceRequestListener() {
             @Override
             public void onResponse(JSONObject response) {
+                ITEMS.clear();
                 try {
 //                    Log.e("History", response.getJSONArray("history").toString());
 
@@ -170,15 +221,19 @@ public class HistoryFragment extends Fragment {
                     ITEMS.add(empty);
                     ha.notifyDataSetChanged();
                 }
+                mSwipeRefreshLayout.setRefreshing(false);
+
             }
 
             @Override
             public void onError(ErrorCode anError) {
 //                final int errorCode = anError.code;
 //                Log.e("History", anError.toString());
+                ITEMS.clear();
                 History empty = new History("-1", "", "", "", "No Data", "", null, null);
                 ITEMS.add(empty);
                 ha.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
     }

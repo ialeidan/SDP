@@ -8,15 +8,20 @@ public class Bid {
     private String sp_id;
     private String price;
     private Location location;
+
+
+
+    private Location sp_location;
     private String customer_id;
     private String request_id;
     private String status;
 
-    public Bid(String bid_id, String sp_id, String price, Location location, String customer_id, String request_id, String status) {
+    public Bid(String bid_id, String sp_id, String price, Location location, Location sp_location, String customer_id, String request_id, String status) {
         this.bid_id = bid_id;
         this.sp_id = sp_id;
         this.price = price;
         this.location = location;
+        this.sp_location = sp_location;
         this.customer_id = customer_id;
         this.request_id = request_id;
         this.status = status;
@@ -76,5 +81,13 @@ public class Bid {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Location getSp_location() {
+        return sp_location;
+    }
+
+    public void setSp_location(Location sp_location) {
+        this.sp_location = sp_location;
     }
 }

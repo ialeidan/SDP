@@ -166,14 +166,14 @@ public class Networking {
     }
 
     // Sign Up new SP.
-    public static void signUpSP(final String username, final String phone, final String email, final String password, final DataSourceRequestListener listener) {
+    public static void signUpSP(final String username, final String phone, final String email, final String password, final String device, final DataSourceRequestListener listener) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("email", email);
             jsonObject.put("password", password);
             jsonObject.put("phone", phone);
             jsonObject.put("username", username);
-            jsonObject.put("device", "test"); //TODO: Change.
+            jsonObject.put("device", device); //TODO: Change.
         } catch (JSONException e) {
             e.printStackTrace();
             listener.onError(new ErrorCode(-23, "Error Signing Up", e.getMessage()));
@@ -200,6 +200,7 @@ public class Networking {
                             AuthInfo.setAccessToken(access_token);
                             AuthInfo.setPhone(phone);
                             AuthInfo.setUserType(type);
+                            AuthInfo.setDevice(device);
 
 
                             listener.onResponse(response);
@@ -758,7 +759,7 @@ public class Networking {
                 });
     }
 
-    public static void sendBid(final String request_id, final String price, final DataSourceRequestListener listener) {
+    public static void sendBid(final String request_id, final String price, final Location location, final DataSourceRequestListener listener) {
         String user_id = AuthInfo.getUserID();
         String access_token = AuthInfo.getAccessToken();
 
@@ -767,12 +768,22 @@ public class Networking {
             return;
         }
 
+        JSONObject locationJSON = new JSONObject();
+        try {
+            locationJSON.put("latitude", Double.toString(location.getLatitude()));
+            locationJSON.put("longitude", Double.toString(location.getLongitude()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            listener.onError(new ErrorCode(-103, "Error Sending Request", e.getMessage()));
+            return;
+        }
 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("user_id", user_id);
             jsonObject.put("request_id", request_id);
             jsonObject.put("price", price);
+            jsonObject.put("location", locationJSON);
         } catch (JSONException e) {
             e.printStackTrace();
             listener.onError(new ErrorCode(-143, "Error Sending Bid", e.getMessage()));
@@ -870,6 +881,64 @@ public class Networking {
                 });
 
     }
+
+    public static void getSPService(final DataSourceRequestListener listener) {
+        String user_id = AuthInfo.getUserID();
+        String access_token = AuthInfo.getAccessToken();
+
+        if (user_id.isEmpty() || access_token.isEmpty()) {
+            listener.onError(new ErrorCode(-1, "NOT_AUTHENTICATED", ""));
+            return;
+        }
+
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("user_id", user_id);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            listener.onError(new ErrorCode(-63, "Error Getting Service", e.getMessage()));
+//            return;
+//        }
+
+
+        AndroidNetworking.get(URL + "sp/service?user_id={user_id}")
+//                .addHeaders("Authorization", access_token)
+//                .addQueryParameter(jsonObject)
+                .addPathParameter("user_id", user_id)
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        listener.onResponse(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                        JSONObject error;
+                        String code;
+
+                        try {
+                            error = new JSONObject(anError.getErrorBody());
+
+                            code = error.getString("message");
+
+                            if (code.equals("NOT_AUTHENTICATED")) {
+                                listener.onError(new ErrorCode(-1, "NOT_AUTHENTICATED", ""));
+                            } else {
+                                listener.onError(new ErrorCode(-63, "Error Getting Service", ""));
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            listener.onError(new ErrorCode(-63, "Error Getting Service", e.getMessage()));
+                        }
+                    }
+                });
+
+    }
+
 
     //TODO: Check if requst_id really needed.
     public static void getBidStatus(final String request_id, final DataSourceRequestListener listener) {

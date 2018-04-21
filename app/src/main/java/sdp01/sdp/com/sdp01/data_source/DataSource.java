@@ -1,6 +1,9 @@
 package sdp01.sdp.com.sdp01.data_source;
 
 import android.text.TextUtils;
+
+import com.braintreepayments.cardform.view.CardForm;
+
 import org.json.JSONObject;
 
 import sdp01.sdp.com.sdp01.util.AuthInfo;
@@ -79,7 +82,7 @@ public class DataSource {
 
     }
 
-    public static void signUpSP(String username, String phone, String email, String password, final DataSourceRequestListener listner) {
+    public static void signUpSP(String username, String phone, String email, String password, String device, final DataSourceRequestListener listner) {
         String userPhone = phone.replaceAll("\\s+", "");
         String userEmail = email.replaceAll("\\s+", "");
         String userPassword = password.replaceAll("\\s+", "");
@@ -88,7 +91,7 @@ public class DataSource {
         if (error != null) {
             listner.onError(error);
         } else {
-            Networking.signUpSP(username, userPhone, userEmail, userPassword, new DataSourceRequestListener() {
+            Networking.signUpSP(username, userPhone, userEmail, userPassword, device, new DataSourceRequestListener() {
                 @Override
                 public void onResponse(JSONObject response) {
                     listner.onResponse(response);
