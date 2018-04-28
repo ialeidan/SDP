@@ -8,9 +8,6 @@ public class Bid {
     private String sp_id;
     private String price;
     private Location location;
-
-
-
     private Location sp_location;
     private String customer_id;
     private String request_id;

@@ -14,7 +14,8 @@
             android:layout_height="wrap_content"
             android:hint="Enter Price"
             android:imeOptions="actionDone"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"
+            android:textColor="@color/green_button" />
 
     </android.support.design.widget.TextInputLayout>
 </FrameLayout>

@@ -63,6 +63,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        getSupportActionBar().hide();
         // Set up the login form.
         mUsernameView = (EditText) findViewById(R.id.username);
         mPhonenumberView = (EditText) findViewById(R.id.phone);

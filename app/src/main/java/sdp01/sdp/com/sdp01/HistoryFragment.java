@@ -217,7 +217,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    History empty = new History("-1", "", "", "", "No Data", "", null, null);
+                    History empty = new History("-1", "", "", "No Data", "", "", null, null);
                     ITEMS.add(empty);
                     ha.notifyDataSetChanged();
                 }
@@ -230,7 +230,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 //                final int errorCode = anError.code;
 //                Log.e("History", anError.toString());
                 ITEMS.clear();
-                History empty = new History("-1", "", "", "", "No Data", "", null, null);
+                History empty = new History("-1", "", "", "No Data", "", "", null, null);
                 ITEMS.add(empty);
                 ha.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);

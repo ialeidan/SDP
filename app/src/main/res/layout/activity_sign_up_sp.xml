@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_google_signin_btn_text_dark_focused">
+
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:alpha="0.2"
+        android:contentDescription="TODO"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/bg_app" />
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -24,7 +41,8 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -34,7 +52,8 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:textColorHint="@color/white_field_text">
 
                 <EditText
                     android:id="@+id/username"
@@ -43,13 +62,15 @@
                     android:hint="SP Name"
                     android:inputType="text|textPersonName"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/common_google_signin_btn_text_dark_pressed" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:textColorHint="@color/white_field_text">
 
                 <EditText
                     android:id="@+id/phone"
@@ -58,13 +79,15 @@
                     android:hint="@string/prompt_phone_number"
                     android:inputType="phone"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/common_google_signin_btn_text_dark_pressed" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/white_field_text">
 
                 <EditText
                     android:id="@+id/device"
@@ -73,13 +96,15 @@
                     android:hint="Device Number"
                     android:inputType="phone"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/common_google_signin_btn_text_dark_pressed" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/white_field_text">
 
                 <AutoCompleteTextView
                     android:id="@+id/email"
@@ -88,13 +113,15 @@
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/common_google_signin_btn_text_dark_pressed" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:textColorHint="@color/white_field_text">
 
                 <EditText
                     android:id="@+id/password"
@@ -106,7 +133,8 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/common_google_signin_btn_text_dark_pressed" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -116,29 +144,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:background="@color/green_button"
                 android:text="@string/action_sign_up"
+                android:textColor="@color/white_text"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/sign_in_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha="0.5"
+                android:alpha="1"
                 android:background="@null"
                 android:onClick="signIn"
-                android:text="@string/action_sign_in" />
+                android:text="@string/action_sign_in"
+                android:textColor="@color/dark_green_text"
+                android:textStyle="italic" />
 
             <Button
                 android:id="@+id/sign_up_sp_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha="0.5"
+                android:alpha="1"
                 android:background="@null"
                 android:onClick="signUpC"
-                android:text="Sign Up as Customer" />
+                android:text="Sign Up as Customer"
+                android:textColor="@color/dark_green_text"
+                android:textStyle="italic" />
 
         </LinearLayout>
     </ScrollView>
 
 
 </LinearLayout>
+
+</FrameLayout>

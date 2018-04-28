@@ -3,4 +3,11 @@
     <color name="colorPrimary">#a7abc0</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="green_button">#8dc33b</color>
+    <color name="white_text">#ffffff</color>
+    <color name="dark_green_text">#729a37</color>
+    <color name="white_field_text">#dfdfdf</color>
+    <color name="bg_lists">#eeeef3</color>
+    <color name="list_text_prim">#7c7c7c</color>
+    <color name="list_text_sec">#747474</color>
 </resources>

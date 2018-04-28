@@ -7,6 +7,8 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,7 +32,9 @@ import sdp01.sdp.com.sdp01.sp.dummy.DummyContent.DummyItem;
 import sdp01.sdp.com.sdp01.util.AuthInfo;
 import sdp01.sdp.com.sdp01.util.Networking;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
@@ -65,8 +69,26 @@ public class MyRequestRecyclerViewAdapter extends RecyclerView.Adapter<MyRequest
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getRequest_id());
+        holder.mIdView.setText("SP " + (position + 1));
         holder.mContentView.setText(mValues.get(position).getService());
+//        holder.mLocationText.setText(mValues.get(position).getLocation().toString());
+
+        try {
+
+            Geocoder geo = new Geocoder(MyApplication.getAppContext(), Locale.getDefault());
+            List<Address> addresses = geo.getFromLocation(mValues.get(position).getLocation().getLatitude(), mValues.get(position).getLocation().getLongitude(), 1);
+            if (addresses.isEmpty()) {
+                holder.mLocationText.setText("Waiting for Location");
+            }
+            else {
+                if (addresses.size() > 0) {
+                    holder.mLocationText.setText(addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +113,7 @@ public class MyRequestRecyclerViewAdapter extends RecyclerView.Adapter<MyRequest
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final TextView mLocationText;
         public Request mItem;
 
         public ViewHolder(View view) {
@@ -98,6 +121,7 @@ public class MyRequestRecyclerViewAdapter extends RecyclerView.Adapter<MyRequest
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.item_number);
             mContentView = (TextView) view.findViewById(R.id.content);
+            mLocationText = (TextView) view.findViewById(R.id.location);
         }
 
         @Override
@@ -108,8 +132,9 @@ public class MyRequestRecyclerViewAdapter extends RecyclerView.Adapter<MyRequest
 
     // Alert with TextInput to make a bid:
     public void makeBid(final Request request) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
         builder.setTitle("Enter service price");
+
         View viewInflated = LayoutInflater.from(context).inflate(R.layout.alert_textinput, (ViewGroup) v, false);
         final EditText input = (EditText) viewInflated.findViewById(R.id.input);
         builder.setView(viewInflated);

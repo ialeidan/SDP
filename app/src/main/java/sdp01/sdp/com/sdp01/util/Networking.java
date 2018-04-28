@@ -22,7 +22,6 @@ public class Networking {
 
 
     // Error Code -1, means NOT_AUTHENTICATED
-
     private final static String URL = "https://scala-sdp.herokuapp.com/";
 
     // Login with email and password

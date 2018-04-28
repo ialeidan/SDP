@@ -1,11 +1,21 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/common_google_signin_btn_text_dark_focused</item>
+        <item name="colorPrimaryDark">@color/dark_green_text</item>
+        <item name="colorAccent">@color/green_button</item>
+        <item name="colorControlNormal">#c5c5c5</item>
+        <item name="android:colorBackground">@color/common_google_signin_btn_text_dark_focused
+        </item>
+        <item name="android:colorForeground">@color/common_google_signin_btn_text_dark_pressed
+        </item>
+        <item name="android:textColorPrimaryInverse">
+            @color/common_google_signin_btn_text_dark_focused
+        </item>
+        <!--<item name="colorControlActivated">@color/accent</item>-->
+        <!--<item name="colorControlHighlight">@color/accent</item>-->
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -17,4 +27,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="DialogTheme" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="android:textColorPrimary">@color/common_google_signin_btn_text_dark_focused</item>
+    </style>
 </resources>
