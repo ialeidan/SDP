@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_lists"
+    android:background="@color/list_text_sec"
     tools:context=".customer.PaymentFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -26,6 +26,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
         android:text="Rate the service"
+        android:textColor="@color/common_google_signin_btn_text_dark_default"
         app:layout_constraintBottom_toTopOf="@+id/ratingBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

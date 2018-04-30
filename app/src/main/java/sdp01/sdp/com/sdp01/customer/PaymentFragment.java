@@ -116,6 +116,7 @@ public class PaymentFragment extends Fragment {
         });
 
         cardForm = (CardForm) view.findViewById(R.id.card_form);
+
         cardForm.cardRequired(true)
                 .expirationRequired(true)
                 .cvvRequired(true)

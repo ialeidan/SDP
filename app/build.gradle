@@ -5,7 +5,7 @@ android {
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "sdp01.sdp.com.sdp01"
-        minSdkVersion 26
+        minSdkVersion 22
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"

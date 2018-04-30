@@ -186,6 +186,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
             @Override
             public void onResponse(JSONObject response) {
                 ITEMS.clear();
+                Log.e("HISTORY", response.toString());
                 try {
 //                    Log.e("History", response.getJSONArray("history").toString());
 
@@ -193,22 +194,24 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     for (int i = 0; i < histories.length(); i++){
                         JSONObject history_js = histories.getJSONObject(i);
 
-                        JSONObject from_js = history_js.getJSONObject("location").getJSONObject("from");
+                        JSONObject from_js = history_js.getJSONObject("cu_location");
                         Location from = new Location("from");
                         from.setLatitude(Double.parseDouble(from_js.getString("latitude")));
                         from.setLongitude(Double.parseDouble(from_js.getString("longitude")));
 
-                        JSONObject to_js = history_js.getJSONObject("location").getJSONObject("to");
+                        JSONObject to_js = history_js.getJSONObject("sp_location");
                         Location to = new Location("to");
                         to.setLatitude(Double.parseDouble(to_js.getString("latitude")));
                         to.setLongitude(Double.parseDouble(to_js.getString("longitude")));
 
-                        ITEMS.add(new History(history_js.getString("history_id"),
+                        Log.e("HISTORY", to_js.toString());
+
+                        ITEMS.add(new History(String.valueOf(i),      //history_js.getString("history_id"),
                                 history_js.getString("customer_id"),
                                 history_js.getString("sp_id"),
                                 history_js.getString("status"),
                                 history_js.getString("rating"),
-                                history_js.getString("timestamp"),
+                                "",
                                 from,
                                 to));
                     }
@@ -217,6 +220,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.e("HISTORY_JSONCATCH", e.getMessage());
                     History empty = new History("-1", "", "", "No Data", "", "", null, null);
                     ITEMS.add(empty);
                     ha.notifyDataSetChanged();

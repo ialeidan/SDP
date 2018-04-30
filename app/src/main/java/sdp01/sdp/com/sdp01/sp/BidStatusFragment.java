@@ -152,7 +152,7 @@ public class BidStatusFragment extends Fragment {
 
 
                     if (status.equals("canceled")) {
-                        AlertDialog.Builder creditDialog = new AlertDialog.Builder(context);
+                        AlertDialog.Builder creditDialog = new AlertDialog.Builder(context, R.style.DialogTheme);
                         creditDialog.setTitle("Declined")
                                 .setMessage("Customer Declined Bid")
                                 .setNeutralButton("cancel", new DialogInterface.OnClickListener() {
@@ -168,7 +168,7 @@ public class BidStatusFragment extends Fragment {
                     } else if (status.equals("waiting")) {
                         textView.setText("Still waiting for Customer Answer");
                     } else if (status.equals("accepted")) {
-                        AlertDialog.Builder creditDialog = new AlertDialog.Builder(context);
+                        AlertDialog.Builder creditDialog = new AlertDialog.Builder(context, R.style.DialogTheme);
                         creditDialog.setTitle("Accepted")
                                 .setMessage("Customer Accepted Bid")
                                 .setNeutralButton("ok", new DialogInterface.OnClickListener() {

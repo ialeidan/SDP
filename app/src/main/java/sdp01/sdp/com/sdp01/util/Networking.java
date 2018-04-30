@@ -257,9 +257,10 @@ public class Networking {
             return;
         }
 
-        AndroidNetworking.get(URL + "history")
+        AndroidNetworking.get(URL + "history?user_id={user_id}")
 //                .addHeaders("Authorization", access_token)
-                .addQueryParameter(jsonObject)
+//                .addQueryParameter(jsonObject)
+                .addPathParameter("user_id", user_id)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {

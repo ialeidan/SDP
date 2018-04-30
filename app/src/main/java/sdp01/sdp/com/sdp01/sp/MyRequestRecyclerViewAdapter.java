@@ -73,22 +73,24 @@ public class MyRequestRecyclerViewAdapter extends RecyclerView.Adapter<MyRequest
         holder.mContentView.setText(mValues.get(position).getService());
 //        holder.mLocationText.setText(mValues.get(position).getLocation().toString());
 
-        try {
+        if (mValues.get(position).getLocation() != null) {
 
-            Geocoder geo = new Geocoder(MyApplication.getAppContext(), Locale.getDefault());
-            List<Address> addresses = geo.getFromLocation(mValues.get(position).getLocation().getLatitude(), mValues.get(position).getLocation().getLongitude(), 1);
-            if (addresses.isEmpty()) {
-                holder.mLocationText.setText("Waiting for Location");
-            }
-            else {
-                if (addresses.size() > 0) {
-                    holder.mLocationText.setText(addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+
+            try {
+
+                Geocoder geo = new Geocoder(MyApplication.getAppContext(), Locale.getDefault());
+                List<Address> addresses = geo.getFromLocation(mValues.get(position).getLocation().getLatitude(), mValues.get(position).getLocation().getLongitude(), 1);
+                if (addresses.isEmpty()) {
+                    holder.mLocationText.setText("Waiting for Location");
+                } else {
+                    if (addresses.size() > 0) {
+                        holder.mLocationText.setText(addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
